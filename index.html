@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChroNex- A Time and task management application with precision</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <nav id="main-nav" class="main-nav">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <h2>ChroNex</h2>
+                <h6>A Time and task management application with precision</h6>
+            </div>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#section-fortune" data-target="section-fortune">Fortunes</a></li>
+                <li><a href="#section-stopwatch" data-target="section-stopwatch">Watch</a></li>
+                <li><a href="#section-todo" data-target="section-todo">To-Do</a></li>
+                <li><a href="#section-calculator" data-target="section-calculator">Calculator</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="theme-toggle" aria-pressed="false">Black/White</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="fortune-topper section" id="section-fortune">
+        <div class="add-fortune-control">
+            <input type="text" id="new-fortune-input" placeholder="Add a new fortune line...">
+            <button id="add-fortune-btn">Add Fortune</button>
+        </div>
+        <div id="fortune-box">
+            <p id="fortune-text">Loading fortune...</p>
+        </div>
+        <div class="controls">
+            <button id="btn-font-color">Change Font Color</button>
+            <button id="btn-bg-color">Change Box Background</button>
+            <button id="btn-border-color">Change Border</button>
+            <button id="btn-font-style">Change Font Style</button>
+            <button id="btn-page-bg">Change Page Background</button>
+        </div>
+    </div>
+    
+    <div class="stopwatch-container section" id="section-stopwatch">
+        <h2>Stopwatch</h2>
+        <div id="timer-display">0</div>
+        <div class="stopwatch-controls">
+            <button id="btn-start">Start</button>
+            <button id="btn-stop">Stop</button>
+            <button id="btn-reset">Reset</button>
+        </div>
+    </div>
+
+    <div class="todo-container section" id="section-todo">
+        <h2>To-Do List</h2>
+        <div class="todo-input">
+            <input type="text" id="task-input" placeholder="Enter a new task...">
+            <button id="add-task-btn">Add Task</button>
+        </div>
+        <ul id="task-list">
+        </ul>
+    </div>
+
+    <div class="calculator section" id="section-calculator">
+        <h2>Calculator</h2>
+        <div class="calc-wrapper">
+            <!-- Display (works as div or input; script supports both) -->
+            <div id="calculator-display" class="calc-display">0</div>
+
+            <!-- Buttons: functions, digits, operators -->
+            <div class="calc-buttons">
+                <div class="calc-row">
+                    <button class="btn fn" id="btn-all-clear" data-action="all-clear">AC</button>
+                    <button class="btn fn" id="btn-delete" data-action="delete">DE</button>
+                    <button class="btn fn" id="btn-sign" data-action="sign">+/-</button>
+                    <button class="btn op" id="btn-divide" data-action="operator" data-value="/">÷</button>
+                </div>
+
+                <div class="calc-row">
+                    <button class="btn num" data-action="num" data-value="7">7</button>
+                    <button class="btn num" data-action="num" data-value="8">8</button>
+                    <button class="btn num" data-action="num" data-value="9">9</button>
+                    <button class="btn op" id="btn-mul" data-action="operator" data-value="*">×</button>
+                </div>
+
+                <div class="calc-row">
+                    <button class="btn num" data-action="num" data-value="4">4</button>
+                    <button class="btn num" data-action="num" data-value="5">5</button>
+                    <button class="btn num" data-action="num" data-value="6">6</button>
+                    <button class="btn op" id="btn-sub" data-action="operator" data-value="-">−</button>
+                </div>
+
+                <div class="calc-row">
+                    <button class="btn num" data-action="num" data-value="1">1</button>
+                    <button class="btn num" data-action="num" data-value="2">2</button>
+                    <button class="btn num" data-action="num" data-value="3">3</button>
+                    <button class="btn op" id="btn-add" data-action="operator" data-value="+">+</button>
+                </div>
+
+                <div class="calc-row">
+                    <button class="btn num" data-action="num" data-value="0">0</button>
+                    <button class="btn fn" id="btn-decimal" data-action="decimal">.</button>
+                    <button class="btn fn" id="btn-sqrt" data-action="sqrt">√</button>
+                    <button class="btn eq" id="btn-equals" data-action="equal">=</button>
+                </div>
+
+                <div class="calc-row small-fns">
+                    <button class="btn fn" id="btn-square" data-action="square">x²</button>
+                    <button class="btn fn" id="btn-cube" data-action="cube">x³</button>
+                    <button class="btn fn" id="btn-cuberoot" data-action="cuberoot">∛</button>
+                    <button class="btn fn" id="btn-percent2" data-action="percent">% (alt)</button>
+                </div>
+            </div>
+            <!-- Calculation history -->
+            <div id="calculator-history" class="calc-history">
+                <h3>History</h3>
+                <ul id="history-list"></ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
