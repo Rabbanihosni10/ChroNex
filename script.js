@@ -56,30 +56,37 @@ document.addEventListener('DOMContentLoaded', () => {
         // -----------------------
         // Theme toggle (Black / White) — top button
         // -----------------------
-        (function setupThemeToggle(){
-            const themeBtn = document.getElementById('theme-toggle');
-            const THEME_KEY = 'siteTheme';
+        // -----------------------
+        // Top logo: cycle page background styles (replaces the in-page button)
+        // -----------------------
+        (function setupLogoBgToggle(){
+            const logoBtn = document.getElementById('logo-theme-toggle');
+            const BG_KEY = 'pageBgIndex';
 
-            function applyTheme(theme){
-                if (theme === 'dark') document.body.classList.add('theme-dark');
-                else document.body.classList.remove('theme-dark');
-                if (themeBtn) themeBtn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+            // helper to apply a background style object from bodyBgStyles
+            function applyBgByIndex(i){
+                if (!Array.isArray(bodyBgStyles) || bodyBgStyles.length === 0) return;
+                const idx = ((typeof i === 'number' ? i : 0) + bodyBgStyles.length) % bodyBgStyles.length;
+                const style = bodyBgStyles[idx];
+                document.body.style.backgroundColor = style.color;
+                document.body.style.backgroundImage = style.image;
             }
 
-            // read stored preference
+            if (!logoBtn) return;
+
+            // initialize from storage (if any) else keep current (or default 0)
+            let currentIndex = 0;
             try{
-                const saved = localStorage.getItem(THEME_KEY);
-                if (saved === 'dark') applyTheme('dark');
-                else applyTheme('light');
+                const saved = parseInt(localStorage.getItem(BG_KEY), 10);
+                if (!Number.isNaN(saved) && saved >= 0 && saved < bodyBgStyles.length) currentIndex = saved;
             } catch(e){ /* ignore */ }
 
-            if (!themeBtn) return;
+            applyBgByIndex(currentIndex);
 
-            themeBtn.addEventListener('click', () => {
-                const isDark = document.body.classList.contains('theme-dark');
-                const next = isDark ? 'light' : 'dark';
-                applyTheme(next);
-                try{ localStorage.setItem(THEME_KEY, next); } catch(e){}
+            logoBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % bodyBgStyles.length;
+                applyBgByIndex(currentIndex);
+                try{ localStorage.setItem(BG_KEY, String(currentIndex)); } catch(e){}
             });
         })();
 
