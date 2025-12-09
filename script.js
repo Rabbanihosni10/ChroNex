@@ -20,9 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const newFortuneInput = document.getElementById('new-fortune-input');
     const addFortuneBtn = document.getElementById('add-fortune-btn');
 
+    console.log('DOMContentLoaded: script initialized');
+
     function loadFortunes() {
         const storedFortunes = JSON.parse(localStorage.getItem('myFortunes'));
         fortunes = storedFortunes || DEFAULT_FORTUNES;
+        console.log('Fortunes loaded, count =', fortunes.length);
     }
 
     function saveFortunes() {
@@ -35,23 +38,28 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         const randomIndex = Math.floor(Math.random() * fortunes.length);
-        fortuneText.textContent = fortunes[randomIndex];
+        const chosen = fortunes[randomIndex];
+        fortuneText.textContent = chosen;
+        console.log('Random fortune selected:', chosen);
     }
-
     loadFortunes();
     displayRandomFortune();
 
-    addFortuneBtn.addEventListener('click', () => {
-        const newText = newFortuneInput.value.trim();
-        if (newText && newText.length > 0) {
-            fortunes.push(newText); // Store in the array
-            saveFortunes();          // Store in localStorage
-            newFortuneInput.value = '';
-            // Display the new list size or confirmation (optional)
-            newFortuneInput.placeholder = `Added! Total fortunes: ${fortunes.length}`;
-            setTimeout(() => newFortuneInput.placeholder = "Add a new fortune line...", 2000);
-        }
-    });
+    if (addFortuneBtn && newFortuneInput) {
+        addFortuneBtn.addEventListener('click', () => {
+            const newText = newFortuneInput.value.trim();
+            if (newText && newText.length > 0) {
+                fortunes.push(newText); // Store in the array
+                saveFortunes();          // Store in localStorage
+                newFortuneInput.value = '';
+                // Display the new list size or confirmation (optional)
+                newFortuneInput.placeholder = `Added! Total fortunes: ${fortunes.length}`;
+                setTimeout(() => newFortuneInput.placeholder = "Add a new fortune line...", 2000);
+                console.log('Added new fortune:', newText);
+                alert('Fortune added: ' + newText);
+            }
+        });
+    } else console.warn('Add fortune controls missing');
 
         // -----------------------
         // (Logo background toggle IIFE moved below where bodyBgStyles is declared)
@@ -106,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnBgColor = document.getElementById('btn-bg-color');
     const btnBorderColor = document.getElementById('btn-border-color');
     const btnFontStyle = document.getElementById('btn-font-style');
-    const btnPageBg = document.getElementById('btn-page-bg');
+    const btnPageBg = document.getElementById('btn-page-bg'); // may be removed; guarded below
 
     const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#33FFF6', '#000000'];
     const fontStyles = [
@@ -165,34 +173,50 @@ document.addEventListener('DOMContentLoaded', () => {
         return (currentIndex + 1) % array.length;
     }
 
-    btnFontColor.addEventListener('click', () => {
-        colorIndex = getNextItem(colors, colorIndex);
-        fortuneText.style.color = colors[colorIndex];
-    });
+    if (btnFontColor) {
+        btnFontColor.addEventListener('click', () => {
+            colorIndex = getNextItem(colors, colorIndex);
+            if (fortuneText) fortuneText.style.color = colors[colorIndex];
+            console.log('Font color changed to', colors[colorIndex]);
+        });
+    }
 
-    btnBgColor.addEventListener('click', () => {
-        colorIndex = getNextItem(colors, colorIndex);
-        fortuneBox.style.backgroundColor = colors[colorIndex];
-    });
+    if (btnBgColor) {
+        btnBgColor.addEventListener('click', () => {
+            colorIndex = getNextItem(colors, colorIndex);
+            if (fortuneBox) fortuneBox.style.backgroundColor = colors[colorIndex];
+            console.log('Box background changed to', colors[colorIndex]);
+        });
+    }
 
-    btnBorderColor.addEventListener('click', () => {
-        colorIndex = getNextItem(colors, colorIndex);
-        fortuneBox.style.borderColor = colors[colorIndex];
-    });
+    if (btnBorderColor) {
+        btnBorderColor.addEventListener('click', () => {
+            colorIndex = getNextItem(colors, colorIndex);
+            if (fortuneBox) fortuneBox.style.borderColor = colors[colorIndex];
+            console.log('Border color changed to', colors[colorIndex]);
+        });
+    }
 
-    btnFontStyle.addEventListener('click', () => {
-        fontIndex = getNextItem(fontStyles, fontIndex);
-        fortuneText.style.fontSize = fontStyles[fontIndex].size;
-        fortuneText.style.fontFamily = fontStyles[fontIndex].family;
-    });
+    if (btnFontStyle) {
+        btnFontStyle.addEventListener('click', () => {
+            fontIndex = getNextItem(fontStyles, fontIndex);
+            if (fortuneText) {
+                fortuneText.style.fontSize = fontStyles[fontIndex].size;
+                fortuneText.style.fontFamily = fontStyles[fontIndex].family;
+            }
+            console.log('Font style changed to', fontStyles[fontIndex]);
+        });
+    }
 
-    btnPageBg.addEventListener('click', () => {
-        bgIndex = getNextItem(bodyBgStyles, bgIndex);
-        const style = bodyBgStyles[bgIndex];
-        
-        document.body.style.backgroundColor = style.color;
-        document.body.style.backgroundImage = style.image;
-    });
+    if (btnPageBg) {
+        btnPageBg.addEventListener('click', () => {
+            bgIndex = getNextItem(bodyBgStyles, bgIndex);
+            const style = bodyBgStyles[bgIndex];
+            document.body.style.backgroundColor = style.color;
+            document.body.style.backgroundImage = style.image;
+            console.log('Page background changed via in-page button to index', bgIndex);
+        });
+    }
 
 
     const timerDisplay = document.getElementById('timer-display');
@@ -218,30 +242,33 @@ document.addEventListener('DOMContentLoaded', () => {
             
             timerDisplay.textContent = timeInSeconds;
         }, 3000); 
+        console.log('Timer started, will increment every 3s');
     }
 
     function stopTimer() {
         if (!isRunning) return;
         isRunning = false;
         clearInterval(timerId); 
+        console.log('Timer stopped at', timeInSeconds);
     }
 
     function resetTimer() {
         stopTimer(); 
         timeInSeconds = 0;
         timerDisplay.textContent = timeInSeconds; 
+        console.log('Timer reset to 0');
     }
 
-    btnStart.addEventListener('click', startTimer);
-    btnStop.addEventListener('click', stopTimer);
-    btnReset.addEventListener('click', resetTimer);
+    if (btnStart) btnStart.addEventListener('click', () => { startTimer(); alert('Timer started'); });
+    if (btnStop) btnStop.addEventListener('click', () => { stopTimer(); });
+    if (btnReset) btnReset.addEventListener('click', () => { resetTimer(); });
 
 
     const taskInput = document.getElementById('task-input');
     const addTaskBtn = document.getElementById('add-task-btn');
     const taskList = document.getElementById('task-list');
 
-    loadTasks();
+    if (taskList) loadTasks();
 
     function loadTasks() {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -250,9 +277,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveTasks() {
         const tasks = [];
+        if (!taskList) return;
         taskList.querySelectorAll('li').forEach(li => {
+            const span = li.querySelector('span');
             tasks.push({
-                text: li.querySelector('span').textContent,
+                text: span ? span.textContent : '',
                 completed: li.classList.contains('completed')
             });
         });
@@ -289,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
         li.appendChild(span);
         li.appendChild(deleteBtn);
         
-        taskList.appendChild(li);
+        if (taskList) taskList.appendChild(li);
     }
 
     const calculatorDisplay = document.getElementById('calculator-display');
@@ -466,20 +495,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-    addTaskBtn.addEventListener('click', () => {
-        const taskText = taskInput.value.trim();
+    if (addTaskBtn && taskInput) {
+        addTaskBtn.addEventListener('click', () => {
+            const taskText = taskInput.value.trim();
+            if (taskText !== '') {
+                createTaskElement(taskText, false);
+                saveTasks(); 
+                taskInput.value = ''; 
+                console.log('Task added:', taskText);
+                alert('Task added: ' + taskText);
+            }
+        });
 
-        if (taskText !== '') {
-            createTaskElement(taskText, false);
-            saveTasks(); 
-            taskInput.value = ''; 
-        }
-    });
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTaskBtn.click();
+        });
+    }
 
-    taskInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            addTaskBtn.click();
+    // -----------------------
+    // Hero Converter (assignment 1.2)
+    // Simple converter: transforms input text to UPPERCASE and shows result
+    // -----------------------
+    const heroInput = document.getElementById('hero-input');
+    const heroBtn = document.getElementById('hero-convert-btn');
+    const heroOutput = document.getElementById('hero-output');
+
+    function convert() {
+        if (!heroInput) return;
+        const v = heroInput.value.trim();
+        if (v === '') {
+            alert('Please enter text to convert.');
+            return;
         }
-    });
+        const converted = v.toUpperCase();
+        if (heroOutput) heroOutput.textContent = converted;
+        console.log('Hero convert:', v, '→', converted);
+        alert('Converted value: ' + converted);
+        return converted;
+    }
+
+    if (heroBtn) heroBtn.addEventListener('click', convert);
 
 });

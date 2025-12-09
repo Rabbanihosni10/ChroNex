@@ -32,7 +32,6 @@
                         <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
                     </svg>
                 </button>
-                <button id="theme-toggle" aria-pressed="false">Black/White</button>
             </div>
         </div>
     </nav>
@@ -50,7 +49,14 @@
             <button id="btn-bg-color">Change Box Background</button>
             <button id="btn-border-color">Change Border</button>
             <button id="btn-font-style">Change Font Style</button>
-            <button id="btn-page-bg">Change Page Background</button>
+            <!-- Page background control moved to top logo -->
+        </div>
+
+        <!-- Hero Converter (Assignment 1.2) -->
+        <div class="hero-converter" style="margin-top:12px; display:flex; justify-content:center; gap:8px;">
+            <input id="hero-input" type="text" placeholder="Enter text to convert" style="padding:8px; width:260px;" />
+            <button id="hero-convert-btn">Convert</button>
+            <span id="hero-output" aria-live="polite" style="align-self:center; font-weight:600;"></span>
         </div>
     </div>
     
