@@ -495,6 +495,142 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
+    // -----------------------
+    // Calculator controller: wire buttons to calculation helper
+    // -----------------------
+    (function setupCalculator(){
+        if (!calculatorDisplay) return;
+        const calc = calculation();
+        let pendingOperator = null;
+        let pendingValue = null;
+        let isNewEntry = false; // when true, next number press replaces display
+
+        const setDisplay = (v) => calc.setDisplay(v);
+        const getDisplay = () => String(calc.getDisplay());
+
+        // helper to input a digit
+        function inputDigit(d) {
+            if (isNewEntry || getDisplay() === '0') {
+                setDisplay(d);
+                isNewEntry = false;
+            } else {
+                setDisplay(getDisplay() + d);
+            }
+        }
+
+        const historyList = document.getElementById('history-list');
+        function addHistoryEntry(text){
+            if (!historyList) return;
+            const li = document.createElement('li');
+            li.textContent = text;
+            // newest on top
+            historyList.insertBefore(li, historyList.firstChild);
+        }
+
+        // wire all calc buttons
+        const buttons = Array.from(document.querySelectorAll('.calc-buttons .btn'));
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const action = btn.getAttribute('data-action');
+                const value = btn.getAttribute('data-value');
+
+                switch(action) {
+                    case 'num':
+                        inputDigit(value);
+                        break;
+                    case 'decimal':
+                        calc.decimal();
+                        isNewEntry = false;
+                        break;
+                    case 'operator':
+                        // store current and operator
+                        if (pendingOperator && !isNewEntry) {
+                            // compute previous operation first
+                            const b = getDisplay();
+                            const result = calc.equal(pendingOperator, pendingValue, b);
+                            setDisplay(result);
+                            // record intermediate result in history
+                            addHistoryEntry(`${pendingValue} ${pendingOperator} ${b} = ${result}`);
+                            pendingValue = result;
+                        } else {
+                            pendingValue = getDisplay();
+                        }
+                        pendingOperator = value;
+                        isNewEntry = true;
+                        break;
+                    case 'equal':
+                        if (pendingOperator) {
+                            const a = pendingValue;
+                            const b = getDisplay();
+                            const result = calc.equal(pendingOperator, a, b);
+                            setDisplay(result);
+                            addHistoryEntry(`${a} ${pendingOperator} ${b} = ${result}`);
+                            pendingOperator = null;
+                            pendingValue = null;
+                            isNewEntry = true;
+                        }
+                        break;
+                    case 'all-clear':
+                        calc.allClear();
+                        pendingOperator = null;
+                        pendingValue = null;
+                        isNewEntry = false;
+                        break;
+                    case 'delete':
+                        calc.deleteLast();
+                        break;
+                    case 'sign':
+                        const cur = getDisplay();
+                        if (cur.startsWith('-')) setDisplay(cur.slice(1)); else setDisplay('-' + cur);
+                        break;
+                    case 'sqrt':
+                        {
+                            const before = getDisplay();
+                            const res = calc.sqrt(before);
+                            addHistoryEntry(`√(${before}) = ${res}`);
+                            isNewEntry = true;
+                        }
+                        break;
+                    case 'square':
+                        {
+                            const before = getDisplay();
+                            const res = calc.square(before);
+                            addHistoryEntry(`sqr(${before}) = ${res}`);
+                            isNewEntry = true;
+                        }
+                        break;
+                    case 'cube':
+                        {
+                            const before = getDisplay();
+                            const res = calc.cube(before);
+                            addHistoryEntry(`cube(${before}) = ${res}`);
+                            isNewEntry = true;
+                        }
+                        break;
+                    case 'cuberoot':
+                        {
+                            const before = getDisplay();
+                            const res = calc.cubeRoot(before);
+                            addHistoryEntry(`cuberoot(${before}) = ${res}`);
+                            isNewEntry = true;
+                        }
+                        break;
+                    case 'percent':
+                        {
+                            const before = getDisplay();
+                            const res = calc.percentage(before);
+                            addHistoryEntry(`%(${before}) = ${res}`);
+                            isNewEntry = true;
+                        }
+                        break;
+                    default:
+                        // unknown action
+                        break;
+                }
+            });
+        });
+    })();
+
     if (addTaskBtn && taskInput) {
         addTaskBtn.addEventListener('click', () => {
             const taskText = taskInput.value.trim();
